@@ -181,3 +181,13 @@ cython_debug/
 /ckpts
 
 /.vscode/
+
+# local cluster launchers, local paths/secrets, run logs and data links (see env.sh.example)
+*.sbatch
+env.sh
+*.log
+log/
+.venv/
+/evaluate/annotation
+/data
+/eval_outputs/
