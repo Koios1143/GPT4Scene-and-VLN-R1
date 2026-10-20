@@ -1,0 +1,82 @@
+{
+ "scene0458_01": {
+  "marked": 21,
+  "marks_per_frame_mean": 4.75,
+  "frames_with_marks": 63
+ },
+ "scene0568_02": {
+  "marked": 19,
+  "marks_per_frame_mean": 3.59375,
+  "frames_with_marks": 64
+ },
+ "scene0591_02": {
+  "marked": 33,
+  "marks_per_frame_mean": 8.453125,
+  "frames_with_marks": 64
+ },
+ "scene0697_01": {
+  "marked": 19,
+  "marks_per_frame_mean": 3.65625,
+  "frames_with_marks": 63
+ },
+ "scene0164_00": {
+  "marked": 31,
+  "marks_per_frame_mean": 7.09375,
+  "frames_with_marks": 64
+ },
+ "scene0426_00": {
+  "marked": 32,
+  "marks_per_frame_mean": 5.734375,
+  "frames_with_marks": 63
+ },
+ "scene0025_00": {
+  "marked": 31,
+  "marks_per_frame_mean": 8.390625,
+  "frames_with_marks": 63
+ },
+ "scene0046_00": {
+  "marked": 36,
+  "marks_per_frame_mean": 5.921875,
+  "frames_with_marks": 63
+ },
+ "scene0050_00": {
+  "marked": 25,
+  "marks_per_frame_mean": 5.0,
+  "frames_with_marks": 63
+ },
+ "scene0144_00": {
+  "marked": 20,
+  "marks_per_frame_mean": 5.96875,
+  "frames_with_marks": 64
+ },
+ "scene0378_00": {
+  "marked": 32,
+  "marks_per_frame_mean": 7.34375,
+  "frames_with_marks": 64
+ },
+ "scene0518_00": {
+  "marked": 15,
+  "marks_per_frame_mean": 5.125,
+  "frames_with_marks": 64
+ },
+ "scene0593_00": {
+  "marked": 20,
+  "marks_per_frame_mean": 3.90625,
+  "frames_with_marks": 64
+ },
+ "scene0616_00": {
+  "marked": 21,
+  "marks_per_frame_mean": 5.390625,
+  "frames_with_marks": 64
+ },
+ "scene0699_00": {
+  "marked": 29,
+  "marks_per_frame_mean": 5.6875,
+  "frames_with_marks": 63
+ },
+ "scene0700_00": {
+  "marked": 22,
+  "marks_per_frame_mean": 4.265625,
+  "frames_with_marks": 63
+ }
+}

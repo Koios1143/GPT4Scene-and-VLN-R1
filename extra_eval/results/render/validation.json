@@ -1,0 +1,42 @@
+{
+ "scenes": [
+  "scene0025_00",
+  "scene0164_00",
+  "scene0426_00"
+ ],
+ "grounding": {
+  "n": 408,
+  "released": 53.68,
+  "rendered": 56.37,
+  "diff": 2.7,
+  "item_agreement": 87.01
+ },
+ "grounding_iou25": {
+  "n": 408,
+  "released": 52.94,
+  "rendered": 55.39,
+  "diff": 2.45,
+  "item_agreement": 87.25
+ },
+ "qa_em": {
+  "n": 285,
+  "released": 56.49,
+  "rendered": 55.79,
+  "diff": -0.7,
+  "item_agreement": 95.79
+ },
+ "qa_em_r": {
+  "n": 285,
+  "released": 59.3,
+  "rendered": 58.25,
+  "diff": -1.05,
+  "item_agreement": 95.44
+ },
+ "qa_gpt": {
+  "n": 285,
+  "released": 59.74,
+  "rendered": 58.77,
+  "diff": -0.96,
+  "item_agreement": 93.33
+ }
+}

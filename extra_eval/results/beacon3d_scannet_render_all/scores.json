@@ -1,0 +1,110 @@
+{
+ "benchmark": "Beacon3D ScanNet",
+ "coverage": {
+  "grounding": {
+   "items": 1611,
+   "items_kept": 1611,
+   "scenes_kept": 16,
+   "scenes_dropped": []
+  },
+  "qa": {
+   "items": 1155,
+   "items_kept": 1155,
+   "scenes_kept": 16,
+   "scenes_dropped": []
+  }
+ },
+ "grounding_no_valid_mark": 2,
+ "grounding_best": {
+  "overall": 64.58,
+  "class": 64.58,
+  "appearance": 64.72,
+  "geometry": 59.82,
+  "spatial": 60.99,
+  "functionality": 55.56,
+  "chain": 57.92,
+  "object": 49.87,
+  "chain_four_types": [
+   57.92,
+   19.05,
+   3.12,
+   19.91
+  ]
+ },
+ "grounding_iou25": {
+  "overall": 60.18,
+  "class": 60.18,
+  "appearance": 61.35,
+  "geometry": 54.79,
+  "spatial": 56.88,
+  "functionality": 55.56,
+  "chain": 52.9,
+  "object": 45.71,
+  "chain_four_types": [
+   52.9,
+   17.75,
+   3.9,
+   25.45
+  ]
+ },
+ "qa_em_local": {
+  "EM": 56.7965367965368,
+  "EM-R": 59.307359307359306,
+  "empty_preds": 0
+ },
+ "qa_judge": "gpt-4o-mini-2024-07-18",
+ "qa_best": {
+  "EM": 56.8,
+  "EM-R": 59.31,
+  "GPT-Score": 60.3,
+  "case": 60.3,
+  "object": 18.7,
+  "class": 43.69,
+  "appearance": 67.87,
+  "geometry": 60.76,
+  "spatial": 54.92,
+  "existence": 63.67,
+  "functionality": 83.33,
+  "chain_wo_extra": [
+   37.27,
+   12.89,
+   28.42,
+   21.43
+  ],
+  "chain_overall": [
+   32.55,
+   17.32,
+   27.53,
+   22.6
+  ],
+  "R1": 37.56,
+  "R2": 45.82
+ },
+ "qa_iou25": {
+  "EM": 56.8,
+  "EM-R": 59.31,
+  "GPT-Score": 60.3,
+  "case": 60.3,
+  "object": 18.7,
+  "class": 43.69,
+  "appearance": 67.87,
+  "geometry": 60.76,
+  "spatial": 54.92,
+  "existence": 63.67,
+  "functionality": 83.33,
+  "chain_wo_extra": [
+   33.7,
+   11.65,
+   31.99,
+   22.67
+  ],
+  "chain_overall": [
+   29.87,
+   15.84,
+   30.22,
+   24.07
+  ],
+  "R1": 33.94,
+  "R2": 50.29
+ }
+}

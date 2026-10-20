@@ -1,0 +1,51 @@
+{
+ "scenes": [
+  "scene0025_00",
+  "scene0046_00",
+  "scene0050_00",
+  "scene0144_00",
+  "scene0164_00",
+  "scene0378_00",
+  "scene0426_00",
+  "scene0518_00",
+  "scene0593_00",
+  "scene0616_00",
+  "scene0699_00",
+  "scene0700_00"
+ ],
+ "grounding": {
+  "n": 1254,
+  "released": 60.53,
+  "rendered": 60.45,
+  "diff": -0.08,
+  "item_agreement": 90.83
+ },
+ "grounding_iou25": {
+  "n": 1254,
+  "released": 59.65,
+  "rendered": 59.49,
+  "diff": -0.16,
+  "item_agreement": 90.91
+ },
+ "qa_em": {
+  "n": 894,
+  "released": 56.15,
+  "rendered": 56.71,
+  "diff": 0.56,
+  "item_agreement": 95.64
+ },
+ "qa_em_r": {
+  "n": 894,
+  "released": 59.06,
+  "rendered": 58.95,
+  "diff": -0.11,
+  "item_agreement": 95.64
+ },
+ "qa_gpt": {
+  "n": 894,
+  "released": 60.12,
+  "rendered": 60.15,
+  "diff": 0.03,
+  "item_agreement": 94.07
+ }
+}

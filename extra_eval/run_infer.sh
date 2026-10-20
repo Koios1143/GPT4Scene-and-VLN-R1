@@ -9,6 +9,9 @@
 #   GPT4SCENE_ANNO  GPT4Scene-Val-Annotation, linked as evaluate/annotation
 #   GPT4SCENE_DATA  GPT4Scene-All images, linked as data/ (the image paths in
 #                   selected_images_mark_3D_val_32.json are relative to the repo root)
+#   SCENE_ANNO      per-scene image list (default: the released
+#                   evaluate/annotation/selected_images_mark_3D_val_32.json; or a
+#                   render/run_render.sh <rule>/selected_images.json)
 #   OUT             output dir                                     (default eval_outputs/extra_eval)
 #   TASKS           space-separated val tags                       (default: scan2cap + Beacon3D)
 #   BATCH_SIZE      per-GPU batch size                             (default 4, as evaluate/infer.sh)
@@ -26,16 +29,17 @@ OUT="${OUT:-eval_outputs/extra_eval}"
 TASKS="${TASKS:-scan2cap beacon3d_scannet_grounding beacon3d_scannet_qa}"
 export PYTHONPATH=.
 mkdir -p "$OUT"
-$PY extra_eval/beacon3d/build_annos.py --out_dir "$OUT/annos" || exit 1
+SCENE_ANNO="${SCENE_ANNO:-evaluate/annotation/selected_images_mark_3D_val_32.json}"
+$PY extra_eval/beacon3d/build_annos.py --scene_anno "$SCENE_ANNO" --out_dir "$OUT/annos" || exit 1
 gpu_list="${CUDA_VISIBLE_DEVICES:-$(nvidia-smi --query-gpu=index --format=csv,noheader | paste -sd,)}"
 IFS=',' read -ra GPULIST <<< "$gpu_list"
 CHUNKS=${#GPULIST[@]}
-echo "model=$MODEL_PATH out=$OUT tasks=[$TASKS] chunks=$CHUNKS"
+echo "model=$MODEL_PATH scene_anno=$SCENE_ANNO out=$OUT tasks=[$TASKS] chunks=$CHUNKS"
 for task in $TASKS; do
     for IDX in $(seq 0 $((CHUNKS-1))); do
         CUDA_VISIBLE_DEVICES=${GPULIST[$IDX]} $PY evaluate/infer.py "$OUT/annos/beacon3d_config.py" \
             evaluate True model qwenvl batch_size "${BATCH_SIZE:-4}" num_workers 8 \
-            model_path "$MODEL_PATH" scene_anno evaluate/annotation/selected_images_mark_3D_val_32.json \
+            model_path "$MODEL_PATH" scene_anno "$SCENE_ANNO" \
             save_interval 2 val_tag "$task" output_dir "$OUT" num_chunks "$CHUNKS" chunk_idx "$IDX" &
     done
     wait
