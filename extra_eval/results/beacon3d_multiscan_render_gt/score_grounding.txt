@@ -1,0 +1,15 @@
+Finish processing inference results, results saved to extra_eval/results/beacon3d_multiscan_render_gt/infer_grounding_processed.json
+
+Scores:
+case:
+[overall]: 51.90
+[class]: 51.90
+[appearance]: 44.16
+[geometry]: 28.12
+[spatial]: 46.98
+
+chain: 40.88
+object: 35.22
+
+Chain analysis:
+four types: 40.88, 18.24, 8.60, 32.29

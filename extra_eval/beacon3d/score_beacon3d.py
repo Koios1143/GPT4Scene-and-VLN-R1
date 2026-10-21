@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""GPT4Scene predictions on Beacon3D (ScanNet) -> Beacon3D infer files + official scores.
+"""GPT4Scene predictions on Beacon3D (one domain) -> Beacon3D infer files + official scores.
 
-Reads ``<preds_dir>/qwenvl_beacon3d_scannet_{grounding,qa}/predictions_chunk_*.json``
-(``evaluate/infer.py``), restricts Beacon3D's ``data/scannet`` + ``metadata`` to the scenes
+Reads ``<preds_dir>/qwenvl_beacon3d_<domain>_{grounding,qa}/predictions_chunk_*.json``
+(``evaluate/infer.py``), restricts Beacon3D's ``data/<domain>`` + ``metadata`` to the scenes
 GPT4Scene has released images for (``beacon3d_coverage.json`` from ``build_annos.py``) and
 runs Beacon3D's evaluators on that subset, unmodified (grounding through
 ``beacon_grounding_shim.py``, QA with the GPT judge).
@@ -16,6 +16,11 @@ highest 3D IoU, and the case is correct when that GT object is a target and the 
 the variant's threshold: ``""`` any overlap (closest to picking an object, as GT-mask models
 do), ``"_iou25"`` IoU >= 0.25 (ScanRefer Acc@0.25 style). Same two variants as the
 Grounded 3D-LLM evaluation in this project.
+
+3RScan / MultiScan (``--domain``, re-rendered inputs only): with GT-object marks (rule gt) the
+mark id maps exactly to a Beacon3D object id through ``--id_map`` (``mark_sets_rgbd.py``),
+correct = that id is a target, one variant; with our Mask3D proposals (rule all) the box-IoU
+matching above runs on ``--seg_attrs`` / ``--gt_attrs`` from ``mask3d_to_proposals.py``.
 """
 
 import argparse
@@ -43,8 +48,8 @@ def rel(text):
     return text.replace(REPO + "/", "")
 
 
-def load_preds(preds_dir, task):
-    paths = sorted(glob.glob(os.path.join(preds_dir, f"qwenvl_beacon3d_scannet_{task}", "predictions_chunk_*.json")))
+def load_preds(preds_dir, dom, task):
+    paths = sorted(glob.glob(os.path.join(preds_dir, f"qwenvl_beacon3d_{dom}_{task}", "predictions_chunk_*.json")))
     rows = [r for p in paths for r in json.load(open(p))]
     return {r["qid"]: r for r in rows}
 
@@ -91,16 +96,24 @@ def main():
     ap.add_argument("--seg_attrs", default=os.path.join(REPO, "evaluate/annotation/scannet_mask3d_val_attributes.pt"))
     ap.add_argument("--gt_attrs", default=os.path.join(REPO, "evaluate/annotation/scannet_val_attributes.pt"))
     ap.add_argument("--result_dir", default=os.path.join(REPO, "extra_eval/results/beacon3d_scannet"))
+    ap.add_argument("--domain", default="scannet", choices=["scannet", "3rscan", "multiscan"])
+    ap.add_argument("--id_map", help="3rscan / multiscan: mark_sets_rgbd.py output (mark id -> objectId)")
     ap.add_argument("--qa_model", default="gpt-4o-mini-2024-07-18",
                     help="Beacon3D QA judge (upstream default gpt-4o-2024-11-20)")
     args = ap.parse_args()
     out_dir = os.path.abspath(args.result_dir)
     os.makedirs(out_dir, exist_ok=True)
     beacon_root = os.path.abspath(args.beacon_root)
-    bdir = os.path.join(beacon_root, "data", "scannet")
+    dom = args.domain
+    bdir = os.path.join(beacon_root, "data", dom)
     coverage = json.load(open(os.path.join(args.anno_dir, "beacon3d_coverage.json")))
-    seg = torch.load(args.seg_attrs, map_location="cpu")
-    gt = torch.load(args.gt_attrs, map_location="cpu")
+    if args.id_map is None:
+        seg = torch.load(args.seg_attrs, map_location="cpu")
+        gt = torch.load(args.gt_attrs, map_location="cpu")
+        variants = VARIANTS
+    else:
+        id_map = json.load(open(args.id_map))["id_map"]
+        variants = {"": 0.0}
 
     # Beacon3D data/metadata restricted to the covered scenes (evaluator inputs, not results)
     sub_dir = os.path.join(os.path.abspath(args.preds_dir), "beacon3d_subset")
@@ -108,31 +121,33 @@ def main():
     src, sub = {}, {}
     for task, key in [("grounding", "scan_id"), ("qa", "scene_id")]:
         keep = set(coverage[task]["scenes_kept"])
-        src[task] = [x for x in json.load(open(os.path.join(bdir, f"scannet_{task}.json"))) if x[key] in keep]
-        meta = {s: v for s, v in json.load(open(os.path.join(bdir, f"metadata_scannet_{task}.json"))).items() if s in keep}
-        sub[task] = (os.path.join(sub_dir, f"scannet_{task}.json"), os.path.join(sub_dir, f"metadata_scannet_{task}.json"))
+        src[task] = [x for x in json.load(open(os.path.join(bdir, f"{dom}_{task}.json"))) if x[key] in keep]
+        meta = {s: v for s, v in json.load(open(os.path.join(bdir, f"metadata_{dom}_{task}.json"))).items() if s in keep}
+        sub[task] = (os.path.join(sub_dir, f"{dom}_{task}.json"), os.path.join(sub_dir, f"metadata_{dom}_{task}.json"))
         json.dump(src[task], open(sub[task][0], "w"))
         json.dump(meta, open(sub[task][1], "w"))
-    all_idx = {t: [i for i, x in enumerate(json.load(open(os.path.join(bdir, f"scannet_{t}.json"))))
+    all_idx = {t: [i for i, x in enumerate(json.load(open(os.path.join(bdir, f"{dom}_{t}.json"))))
                    if x["scan_id" if t == "grounding" else "scene_id"] in set(coverage[t]["scenes_kept"])]
                for t in ["grounding", "qa"]}
 
-    res = {"benchmark": "Beacon3D ScanNet", "coverage": {
+    res = {"benchmark": f"Beacon3D {dom}", "coverage": {
         t: {k: coverage[t][k] for k in ["items", "items_kept"]} | {"scenes_kept": len(coverage[t]["scenes_kept"]),
              "scenes_dropped": coverage[t]["scenes_dropped"]} for t in coverage}}
 
     # ---- grounding ----
-    preds = load_preds(args.preds_dir, "grounding")
+    preds = load_preds(args.preds_dir, dom, "grounding")
     assert sorted(preds) == all_idx["grounding"], f"grounding: {len(preds)} preds for {len(all_idx['grounding'])} items"
     rows, no_mark = [], 0
     for i, s in zip(all_idx["grounding"], src["grounding"]):
         p = preds[i]
         scene = s["scan_id"]
-        n_prop = seg[scene]["locs"].shape[0]
+        n_prop = seg[scene]["locs"].shape[0] if args.id_map is None else len(id_map[scene])
         pid = next((int(m.group(1)) for m in OBJ.finditer(p["pred"]) if int(m.group(1)) < n_prop), None)
         obj, iou = None, 0.0
         if pid is None:
             no_mark += 1
+        elif args.id_map is not None:  # GT-object marks: exact id
+            obj, iou = int(id_map[scene][str(pid)]), 1.0
         else:
             pl = seg[scene]["locs"][pid].tolist()
             pc = construct_bbox_corners(pl[:3], pl[3:])
@@ -142,7 +157,7 @@ def main():
         rows.append({"item_id": s["item_id"], "scan_id": scene, "pred": p["pred"], "pred_proposal": pid,
                      "pred_object_id": obj, "pred_iou": iou, "target_id": s["target_id"]})
     res["grounding_no_valid_mark"] = no_mark
-    for tag, thr in VARIANTS.items():
+    for tag, thr in variants.items():
         infer = [r | {"correct": r["pred_object_id"] in r["target_id"]
                       and (r["pred_iou"] >= thr if thr else r["pred_iou"] > 0)} for r in rows]
         path = os.path.join(out_dir, f"infer_grounding{tag}.json")
@@ -153,7 +168,7 @@ def main():
         res[f"grounding{tag or '_best'}"] = parse_grounding(txt)
 
     # ---- QA ----
-    preds = load_preds(args.preds_dir, "qa")
+    preds = load_preds(args.preds_dir, dom, "qa")
     assert sorted(preds) == all_idx["qa"], f"qa: {len(preds)} preds for {len(all_idx['qa'])} items"
     infer = [{"question_id": s["question_id"], "scene_id": s["scene_id"], "question": s["question"],
               "pred": preds[i]["pred"], "answers": s["answers"]} for i, s in zip(all_idx["qa"], src["qa"])]
@@ -166,7 +181,7 @@ def main():
         print("qa: OPENAI_API_KEY unset, GPT-judged evaluation skipped")
     else:
         res["qa_judge"] = args.qa_model
-        for tag in VARIANTS:  # the grounding->QA chain analysis needs a grounding variant
+        for tag in variants:  # the grounding->QA chain analysis needs a grounding variant
             processed = os.path.join(out_dir, f"infer_qa_processed{tag}.json")
             if tag == "":
                 if os.path.exists(processed):
@@ -179,7 +194,8 @@ def main():
                                         "--grounding", os.path.join(out_dir, f"infer_grounding{tag}_processed.json")],
                            beacon_root, out_dir)
             res[f"qa{tag or '_best'}"] = parse_qa(txt)
-        os.remove(os.path.join(out_dir, "infer_qa_processed_iou25.json"))
+        if "_iou25" in variants:
+            os.remove(os.path.join(out_dir, "infer_qa_processed_iou25.json"))
     json.dump(res, open(os.path.join(out_dir, "scores.json"), "w"), indent=1)
     print(json.dumps(res, indent=1))
 

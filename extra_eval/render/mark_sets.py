@@ -43,6 +43,19 @@ def corners(locs):
     return [construct_bbox_corners(l[:3], l[3:]) for l in locs.tolist()]
 
 
+def all_rule(locs, objects):
+    """Rule ``all``: proposals minus predicted wall / floor / ceiling, empty and duplicate boxes."""
+    P = corners(locs)
+    keep = []
+    for i, name in enumerate(objects[:len(P)]):  # objects lists every instance, locs the first 100
+        if name in STRUCTURE or not np.any(np.asarray(locs[i, 3:]) > 0):
+            continue
+        if any(box3d_iou(P[i], P[j]) >= DUP_IOU for j in keep):
+            continue
+        keep.append(i)
+    return keep
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--anno_dir", default=os.path.join(REPO, "evaluate/annotation"), help="GPT4Scene-Val-Annotation")
@@ -65,14 +78,7 @@ def main():
                                       | {int(best[g]) for g in range(len(G))
                                          if not structure[g] and iou[best[g], g] >= RELEASED_IOU})
         rules["gt"][s] = sorted({int(best[g]) for g in range(len(G)) if not structure[g] and iou[best[g], g] >= GT_IOU})
-        keep = []
-        for i, name in enumerate(seg[s]["objects"][:len(P)]):  # objects lists every instance, locs the first 100
-            if name in STRUCTURE or not np.any(seg[s]["locs"][i, 3:].numpy() > 0):
-                continue
-            if any(box3d_iou(P[i], P[j]) >= DUP_IOU for j in keep):
-                continue
-            keep.append(i)
-        rules["all"][s] = keep
+        rules["all"][s] = all_rule(seg[s]["locs"].numpy(), seg[s]["objects"])
         print(s, {k: len(v[s]) for k, v in rules.items()})
     json.dump(rules, open(args.out, "w"), indent=1)
 

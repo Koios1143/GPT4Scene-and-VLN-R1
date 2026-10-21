@@ -1,0 +1,47 @@
+{
+ "4fbad320-465b-2a5d-85d7-dc83aa09a9fa": {
+  "marked": 59,
+  "marks_per_frame_mean": 6.84375,
+  "frames_with_marks": 64
+ },
+ "634b2183-f5d0-2fb7-87ef-c536720918dc": {
+  "marked": 58,
+  "marks_per_frame_mean": 6.453125,
+  "frames_with_marks": 64
+ },
+ "7747a514-9431-24e8-8505-5979f3f20906": {
+  "marked": 52,
+  "marks_per_frame_mean": 6.65625,
+  "frames_with_marks": 64
+ },
+ "8eabc45f-5af7-2f32-8528-640861d2a135": {
+  "marked": 57,
+  "marks_per_frame_mean": 4.703125,
+  "frames_with_marks": 60
+ },
+ "a0905fd9-66f7-2272-9dfb-0483fdcc54c7": {
+  "marked": 55,
+  "marks_per_frame_mean": 3.265625,
+  "frames_with_marks": 62
+ },
+ "ba6fdaaa-a4c1-2dca-8163-a52b18bf6b64": {
+  "marked": 67,
+  "marks_per_frame_mean": 5.921875,
+  "frames_with_marks": 62
+ },
+ "bcb0fe0a-4f39-2c70-9d5f-a7263a0180ca": {
+  "marked": 63,
+  "marks_per_frame_mean": 8.0,
+  "frames_with_marks": 64
+ },
+ "ddc73797-765b-241a-9e2c-097c5989baf6": {
+  "marked": 62,
+  "marks_per_frame_mean": 5.53125,
+  "frames_with_marks": 64
+ },
+ "e61b0e04-bada-2f31-82d6-72831a602ba7": {
+  "marked": 79,
+  "marks_per_frame_mean": 5.328125,
+  "frames_with_marks": 63
+ }
+}

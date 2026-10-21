@@ -12,6 +12,8 @@
 #   SCENE_ANNO      per-scene image list (default: the released
 #                   evaluate/annotation/selected_images_mark_3D_val_32.json; or a
 #                   render/run_render.sh <rule>/selected_images.json)
+#   DOMAIN          Beacon3D domain of the beacon3d_* tags         (default scannet; 3rscan /
+#                   multiscan need a render/run_render_rgbd.sh SCENE_ANNO)
 #   OUT             output dir                                     (default eval_outputs/extra_eval)
 #   TASKS           space-separated val tags                       (default: scan2cap + Beacon3D)
 #   BATCH_SIZE      per-GPU batch size                             (default 4, as evaluate/infer.sh)
@@ -30,7 +32,7 @@ TASKS="${TASKS:-scan2cap beacon3d_scannet_grounding beacon3d_scannet_qa}"
 export PYTHONPATH=.
 mkdir -p "$OUT"
 SCENE_ANNO="${SCENE_ANNO:-evaluate/annotation/selected_images_mark_3D_val_32.json}"
-$PY extra_eval/beacon3d/build_annos.py --scene_anno "$SCENE_ANNO" --out_dir "$OUT/annos" || exit 1
+$PY extra_eval/beacon3d/build_annos.py --domain "${DOMAIN:-scannet}" --scene_anno "$SCENE_ANNO" --out_dir "$OUT/annos" || exit 1
 gpu_list="${CUDA_VISIBLE_DEVICES:-$(nvidia-smi --query-gpu=index --format=csv,noheader | paste -sd,)}"
 IFS=',' read -ra GPULIST <<< "$gpu_list"
 CHUNKS=${#GPULIST[@]}

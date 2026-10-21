@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
-"""Beacon3D (ScanNet) -> GPT4Scene val annotations + a config file that registers them.
+"""Beacon3D (one domain) -> GPT4Scene val annotations + a config file that registers them.
 
-Writes ``<out_dir>/beacon3d_scannet_{grounding,qa}.json`` in GPT4Scene's val format
+Writes ``<out_dir>/beacon3d_<domain>_{grounding,qa}.json`` in GPT4Scene's val format
 (``scene_id`` / ``obj_id`` / ``prompt`` / ``ref_captions`` / ``qid``) and
 ``<out_dir>/beacon3d_config.py`` = ``evaluate/configs/eval_configs.py`` plus ``val_file_dict``
-entries ``beacon3d_scannet_{grounding,qa}``.
+entries ``beacon3d_<domain>_{grounding,qa}`` (``--domain`` scannet / 3rscan / multiscan; the
+last two only with re-rendered inputs, ``extra_eval/render/``).
 
 GPT4Scene sees a scene only through its released marked frames + BEV image
 (``selected_images_mark_3D_val_32.json``, 143 ScanNet val scenes). Beacon3D items of scenes
@@ -13,7 +14,7 @@ without released images are left out here and listed in ``<out_dir>/beacon3d_cov
 copy of Beacon3D's data/metadata.
 
 Prompts are GPT4Scene's own ScanRefer / ScanQA templates (``scanrefer_mask3d_val.json`` /
-``scanqa_val.json``). ``qid`` is the item's index in Beacon3D's ``scannet_{grounding,qa}.json``.
+``scanqa_val.json``). ``qid`` is the item's index in Beacon3D's ``<domain>_{grounding,qa}.json``.
 """
 
 import argparse
@@ -30,14 +31,16 @@ def main():
     ap.add_argument("--scene_anno", default="evaluate/annotation/selected_images_mark_3D_val_32.json")
     ap.add_argument("--base_config", default="evaluate/configs/eval_configs.py")
     ap.add_argument("--out_dir", required=True)
+    ap.add_argument("--domain", default="scannet", choices=["scannet", "3rscan", "multiscan"])
     args = ap.parse_args()
     os.makedirs(args.out_dir, exist_ok=True)
     have_images = set(json.load(open(args.scene_anno)))
-    bdir = os.path.join(args.beacon_root, "data", "scannet")
+    dom = args.domain
+    bdir = os.path.join(args.beacon_root, "data", dom)
 
     entries, coverage = {}, {}
     for task, scene_key in [("grounding", "scan_id"), ("qa", "scene_id")]:
-        src = json.load(open(os.path.join(bdir, f"scannet_{task}.json")))
+        src = json.load(open(os.path.join(bdir, f"{dom}_{task}.json")))
         annos = []
         for i, it in enumerate(src):
             if it[scene_key] not in have_images:
@@ -50,14 +53,14 @@ def main():
                 annos.append({"scene_id": it["scene_id"], "obj_id": it["object_ids"][0],
                               "prompt": it["question"] + QA_SUFFIX,
                               "ref_captions": list(it["answers"]), "qid": i})
-        path = os.path.join(args.out_dir, f"beacon3d_scannet_{task}.json")
+        path = os.path.join(args.out_dir, f"beacon3d_{dom}_{task}.json")
         json.dump(annos, open(path, "w"), indent=1)
-        entries[f"beacon3d_scannet_{task}"] = path
+        entries[f"beacon3d_{dom}_{task}"] = path
         scenes = sorted({it[scene_key] for it in src})
         coverage[task] = {"items": len(src), "items_kept": len(annos),
                           "scenes_kept": [s for s in scenes if s in have_images],
                           "scenes_dropped": [s for s in scenes if s not in have_images]}
-        print(f"[scannet/{task}] {len(annos)}/{len(src)} items, "
+        print(f"[{dom}/{task}] {len(annos)}/{len(src)} items, "
               f"{len(coverage[task]['scenes_kept'])}/{len(scenes)} scenes -> {path}")
     json.dump(coverage, open(os.path.join(args.out_dir, "beacon3d_coverage.json"), "w"), indent=1)
 

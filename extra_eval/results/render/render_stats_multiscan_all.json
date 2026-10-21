@@ -1,0 +1,27 @@
+{
+ "scene_00105_06": {
+  "marked": 78,
+  "marks_per_frame_mean": 8.640625,
+  "frames_with_marks": 64
+ },
+ "scene_00106_05": {
+  "marked": 56,
+  "marks_per_frame_mean": 8.65625,
+  "frames_with_marks": 64
+ },
+ "scene_00109_00": {
+  "marked": 53,
+  "marks_per_frame_mean": 5.0,
+  "frames_with_marks": 54
+ },
+ "scene_00114_00": {
+  "marked": 58,
+  "marks_per_frame_mean": 4.890625,
+  "frames_with_marks": 57
+ },
+ "scene_00116_03": {
+  "marked": 52,
+  "marks_per_frame_mean": 4.96875,
+  "frames_with_marks": 60
+ }
+}

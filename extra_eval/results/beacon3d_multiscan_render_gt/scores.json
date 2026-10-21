@@ -1,0 +1,65 @@
+{
+ "benchmark": "Beacon3D multiscan",
+ "coverage": {
+  "grounding": {
+   "items": 657,
+   "items_kept": 657,
+   "scenes_kept": 5,
+   "scenes_dropped": []
+  },
+  "qa": {
+   "items": 477,
+   "items_kept": 477,
+   "scenes_kept": 5,
+   "scenes_dropped": []
+  }
+ },
+ "grounding_no_valid_mark": 0,
+ "grounding_best": {
+  "overall": 51.9,
+  "class": 51.9,
+  "appearance": 44.16,
+  "geometry": 28.12,
+  "spatial": 46.98,
+  "chain": 40.88,
+  "object": 35.22,
+  "chain_four_types": [
+   40.88,
+   18.24,
+   8.6,
+   32.29
+  ]
+ },
+ "qa_em_local": {
+  "EM": 33.75262054507338,
+  "EM-R": 35.84905660377358,
+  "empty_preds": 0
+ },
+ "qa_judge": "gpt-4o-mini-2024-07-18",
+ "qa_best": {
+  "EM": 33.75,
+  "EM-R": 35.85,
+  "GPT-Score": 37.32,
+  "case": 37.32,
+  "object": 4.4,
+  "class": 27.82,
+  "appearance": 47.26,
+  "geometry": 50.0,
+  "spatial": 30.15,
+  "existence": 36.44,
+  "chain_wo_extra": [
+   20.0,
+   20.65,
+   18.71,
+   40.65
+  ],
+  "chain_overall": [
+   11.32,
+   23.9,
+   24.95,
+   39.83
+  ],
+  "R1": 33.68,
+  "R2": 68.79
+ }
+}

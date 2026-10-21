@@ -1,0 +1,18 @@
+Scores saved to extra_eval/results/beacon3d_3rscan_render_gt/infer_qa_processed.json
+Finish processing inference results: EM = 49.63 | EM-R = 53.55 | GPT-Score = 52.82
+
+Scores:
+case: 52.82
+object: 8.82
+
+class: 42.93
+appearance: 57.84
+geometry: 56.36
+spatial: 51.97
+existence: 48.82
+
+Chain analysis:
+[w/o extra] four types: 23.45, 8.97, 39.66, 27.93
+[overall] four types: 14.83, 12.01, 37.01, 36.15
+R1 (higher better): 24.30
+R2 (lower better): 71.39
