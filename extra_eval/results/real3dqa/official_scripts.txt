@@ -1,0 +1,26 @@
+
+[GPT4Scene] Loading and evaluating predictions...
+
+=======================================================
+ GPT4Scene — Accuracy Scores (1485 questions)
+=======================================================
+      Exact Match (EM)      Refined EM (Relaxed)
+                 31.45%                    36.57%
+=======================================================
+
+
+
+[GPT4Scene] Loading predictions...
+  extra_eval/results/real3dqa/pred_rotation_0.json: 750 questions
+  extra_eval/results/real3dqa/pred_rotation_90.json: 750 questions
+  extra_eval/results/real3dqa/pred_rotation_180.json: 750 questions
+  extra_eval/results/real3dqa/pred_rotation_270.json: 750 questions
+  [Auto-Detect] Rotation suffixes detected (e.g., '01', '02', '03'). Stripping automatically...
+
+============================================================
+ GPT4Scene — Rotation Consistency Score (750 valid questions)
+============================================================
+       One      Two    Three     Four      VRS
+      54.9     13.2      2.1      0.4     17.7
+============================================================
+

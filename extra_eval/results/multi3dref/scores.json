@@ -1,0 +1,15 @@
+{
+ "pred_dir": "eval_outputs/pc_all",
+ "[multi3dref] all F1@0.25": 64.14348802577597,
+ "[multi3dref] all F1@0.50": 59.5000339391879,
+ "[multi3dref] st_wo_d F1@0.25": 84.11942194695887,
+ "[multi3dref] st_wo_d F1@0.50": 76.98904240114341,
+ "[multi3dref] mt F1@0.25": 49.35806178531033,
+ "[multi3dref] mt F1@0.50": 45.36874630609651,
+ "[multi3dref] st_w_d F1@0.25": 59.16923177265052,
+ "[multi3dref] st_w_d F1@0.50": 54.37826499400177,
+ "[multi3dref] zt_wo_d F1@0.25": 97.72727272727273,
+ "[multi3dref] zt_wo_d F1@0.50": 97.72727272727273,
+ "[multi3dref] zt_w_d F1@0.25": 84.65608465608466,
+ "[multi3dref] zt_w_d F1@0.50": 84.65608465608466
+}

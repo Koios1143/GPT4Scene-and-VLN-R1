@@ -1,0 +1,9 @@
+{
+ "pred_dir": "eval_outputs/pc_all",
+ "[scanrefer] Acc@0.25": 62.32646192679848,
+ "[scanrefer] Acc@0.50": 56.7522086663862,
+ "[scanrefer] Unique Acc@0.25": 89.71006253553155,
+ "[scanrefer] Unique Acc@0.50": 83.28595793064241,
+ "[scanrefer] Multiple Acc@0.25": 56.11046586656343,
+ "[scanrefer] Multiple Acc@0.50": 50.72912633888244
+}

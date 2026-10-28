@@ -1,0 +1,324 @@
+{
+ "note": "PREFIX_CACHE=1 (extra_eval/infer_prefix_cache.py) vs the upstream evaluate/infer.py path on the same inputs; item agreement from extra_eval/compare_preds.py, scores from the same scorers (Beacon3D QA judge gpt-4o-mini-2024-07-18)",
+ "item_agreement": {
+  "released_images": {
+   "beacon3d_scannet_grounding": {
+    "items": 1254,
+    "same_text": 97.77,
+    "same_first_obj_id": 97.77
+   },
+   "beacon3d_scannet_qa": {
+    "items": 894,
+    "same_text": 97.76
+   },
+   "scan2cap": {
+    "items": 2007,
+    "same_text": 76.23
+   }
+  },
+  "render_released": {
+   "beacon3d_scannet_grounding": {
+    "items": 1611,
+    "same_text": 97.64,
+    "same_first_obj_id": 97.64
+   },
+   "beacon3d_scannet_qa": {
+    "items": 1155,
+    "same_text": 98.35
+   }
+  },
+  "render_gt": {
+   "beacon3d_scannet_grounding": {
+    "items": 1611,
+    "same_text": 97.02,
+    "same_first_obj_id": 97.02
+   },
+   "beacon3d_scannet_qa": {
+    "items": 1155,
+    "same_text": 98.01
+   }
+  },
+  "render_all": {
+   "beacon3d_scannet_grounding": {
+    "items": 1611,
+    "same_text": 96.71,
+    "same_first_obj_id": 96.71
+   },
+   "beacon3d_scannet_qa": {
+    "items": 1155,
+    "same_text": 98.87
+   }
+  },
+  "render_3rscan_gt": {
+   "beacon3d_3rscan_grounding": {
+    "items": 1267,
+    "same_text": 96.29,
+    "same_first_obj_id": 96.29
+   },
+   "beacon3d_3rscan_qa": {
+    "items": 816,
+    "same_text": 98.28
+   }
+  },
+  "render_3rscan_all": {
+   "beacon3d_3rscan_grounding": {
+    "items": 1267,
+    "same_text": 94.95,
+    "same_first_obj_id": 94.95
+   },
+   "beacon3d_3rscan_qa": {
+    "items": 816,
+    "same_text": 98.04
+   }
+  },
+  "render_multiscan_gt": {
+   "beacon3d_multiscan_grounding": {
+    "items": 657,
+    "same_text": 94.82,
+    "same_first_obj_id": 94.82
+   },
+   "beacon3d_multiscan_qa": {
+    "items": 477,
+    "same_text": 96.44
+   }
+  },
+  "render_multiscan_all": {
+   "beacon3d_multiscan_grounding": {
+    "items": 657,
+    "same_text": 94.98,
+    "same_first_obj_id": 94.98
+   },
+   "beacon3d_multiscan_qa": {
+    "items": 477,
+    "same_text": 94.97
+   }
+  }
+ },
+ "scores": {
+  "beacon3d_scannet": {
+   "grounding_case": {
+    "upstream": 59.84,
+    "prefix_cache": 60.08
+   },
+   "qa_gpt_score": {
+    "upstream": 60.12,
+    "prefix_cache": 60.01
+   },
+   "qa_em": {
+    "upstream": 56.15,
+    "prefix_cache": 56.38
+   },
+   "qa_em_r": {
+    "upstream": 59.06,
+    "prefix_cache": 58.95
+   }
+  },
+  "beacon3d_scannet_render_released": {
+   "grounding_case": {
+    "upstream": 58.2,
+    "prefix_cache": 58.26
+   },
+   "qa_gpt_score": {
+    "upstream": 61.77,
+    "prefix_cache": 62.42
+   },
+   "qa_em": {
+    "upstream": 58.53,
+    "prefix_cache": 58.96
+   },
+   "qa_em_r": {
+    "upstream": 60.78,
+    "prefix_cache": 61.47
+   }
+  },
+  "beacon3d_scannet_render_gt": {
+   "grounding_case": {
+    "upstream": 66.05,
+    "prefix_cache": 66.05
+   },
+   "qa_gpt_score": {
+    "upstream": 62.23,
+    "prefix_cache": 62.66
+   },
+   "qa_em": {
+    "upstream": 59.05,
+    "prefix_cache": 59.74
+   },
+   "qa_em_r": {
+    "upstream": 61.3,
+    "prefix_cache": 61.9
+   }
+  },
+  "beacon3d_scannet_render_all": {
+   "grounding_case": {
+    "upstream": 64.58,
+    "prefix_cache": 64.58
+   },
+   "qa_gpt_score": {
+    "upstream": 60.3,
+    "prefix_cache": 60.11
+   },
+   "qa_em": {
+    "upstream": 56.8,
+    "prefix_cache": 56.62
+   },
+   "qa_em_r": {
+    "upstream": 59.31,
+    "prefix_cache": 59.31
+   }
+  },
+  "beacon3d_3rscan_render_gt": {
+   "grounding_case": {
+    "upstream": 45.22,
+    "prefix_cache": 45.38
+   },
+   "qa_gpt_score": {
+    "upstream": 52.82,
+    "prefix_cache": 53.0
+   },
+   "qa_em": {
+    "upstream": 49.63,
+    "prefix_cache": 49.63
+   },
+   "qa_em_r": {
+    "upstream": 53.55,
+    "prefix_cache": 53.55
+   }
+  },
+  "beacon3d_3rscan_render_all": {
+   "grounding_case": {
+    "upstream": 33.03,
+    "prefix_cache": 32.46
+   },
+   "qa_gpt_score": {
+    "upstream": 51.65,
+    "prefix_cache": 52.85
+   },
+   "qa_em": {
+    "upstream": 48.28,
+    "prefix_cache": 49.26
+   },
+   "qa_em_r": {
+    "upstream": 52.21,
+    "prefix_cache": 53.06
+   }
+  },
+  "beacon3d_multiscan_render_gt": {
+   "grounding_case": {
+    "upstream": 51.9,
+    "prefix_cache": 51.6
+   },
+   "qa_gpt_score": {
+    "upstream": 37.32,
+    "prefix_cache": 38.84
+   },
+   "qa_em": {
+    "upstream": 33.75,
+    "prefix_cache": 35.22
+   },
+   "qa_em_r": {
+    "upstream": 35.85,
+    "prefix_cache": 37.32
+   }
+  },
+  "beacon3d_multiscan_render_all": {
+   "grounding_case": {
+    "upstream": 42.92,
+    "prefix_cache": 43.23
+   },
+   "qa_gpt_score": {
+    "upstream": 37.32,
+    "prefix_cache": 38.94
+   },
+   "qa_em": {
+    "upstream": 33.33,
+    "prefix_cache": 35.01
+   },
+   "qa_em_r": {
+    "upstream": 35.64,
+    "prefix_cache": 37.32
+   }
+  },
+  "scan2cap": {
+   "Bleu_1@0.25": {
+    "upstream": 75.84,
+    "prefix_cache": 76.08
+   },
+   "Bleu_2@0.25": {
+    "upstream": 62.97,
+    "prefix_cache": 63.08
+   },
+   "Bleu_3@0.25": {
+    "upstream": 51.83,
+    "prefix_cache": 51.8
+   },
+   "Bleu_4@0.25": {
+    "upstream": 42.73,
+    "prefix_cache": 42.65
+   },
+   "METEOR@0.25": {
+    "upstream": 29.22,
+    "prefix_cache": 29.13
+   },
+   "ROUGE_L@0.25": {
+    "upstream": 61.76,
+    "prefix_cache": 61.2
+   },
+   "CIDEr@0.25": {
+    "upstream": 90.52,
+    "prefix_cache": 91.04
+   },
+   "Bleu_1@0.50": {
+    "upstream": 71.16,
+    "prefix_cache": 71.5
+   },
+   "Bleu_2@0.50": {
+    "upstream": 58.99,
+    "prefix_cache": 59.16
+   },
+   "Bleu_3@0.50": {
+    "upstream": 48.7,
+    "prefix_cache": 48.71
+   },
+   "Bleu_4@0.50": {
+    "upstream": 40.25,
+    "prefix_cache": 40.19
+   },
+   "METEOR@0.50": {
+    "upstream": 28.18,
+    "prefix_cache": 28.11
+   },
+   "ROUGE_L@0.50": {
+    "upstream": 59.16,
+    "prefix_cache": 58.64
+   },
+   "CIDEr@0.50": {
+    "upstream": 85.18,
+    "prefix_cache": 85.76
+   }
+  }
+ },
+ "wall_clock_2gpu": {
+  "scan2cap+beacon3d_scannet (released images, 4155 items)": {
+   "upstream_s": 1406,
+   "prefix_cache_s": 227
+  },
+  "beacon3d_scannet render, per rule (2766 items)": {
+   "upstream_s": 2264,
+   "prefix_cache_s": 26
+  },
+  "beacon3d_3rscan render, per rule (2083 items)": {
+   "upstream_s": 1160,
+   "prefix_cache_s": 18
+  },
+  "beacon3d_multiscan render, per rule (1134 items)": {
+   "upstream_s": 1099,
+   "prefix_cache_s": 16
+  },
+  "all 7 benchmarks on released images (40723 items, one pass)": {
+   "upstream_s": null,
+   "prefix_cache_s": 382
+  },
+  "note": "Slurm job elapsed (upstream) / run_infer.sh wall time incl. model load (prefix cache); blackwell, 2 GPUs"
+ }
+}

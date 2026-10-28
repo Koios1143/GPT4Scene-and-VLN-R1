@@ -7,12 +7,13 @@
 #   RUN_PREFIX       inference output dirs = <prefix><domain>_<rule> (default eval_outputs/render_)
 #   RENDER_RGBD_DIR  run_render_rgbd.sh output root        (default eval_outputs/render_rgbd)
 #   QA_MODEL         Beacon3D QA judge                     (default gpt-4o-mini-2024-07-18)
+#   RESULT_DIR       where results go                      (default extra_eval/results)
 set -uo pipefail
 cd "$(dirname "${BASH_SOURCE[0]}")/../.."
 [ -f env.sh ] && source env.sh
 unset CONDA_PREFIX CONDA_DEFAULT_ENV
 PY="${GPT4SCENE_ENV:-.venv}/bin/python"
-RES=extra_eval/results
+RES="${RESULT_DIR:-extra_eval/results}"
 mkdir -p "$RES/render"
 for d in ${DOMAINS:-3rscan multiscan}; do
     rd="${RENDER_RGBD_DIR:-eval_outputs/render_rgbd}/$d"

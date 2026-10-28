@@ -1,0 +1,43 @@
+{
+ "pred_dir": "eval_outputs/pc_all",
+ "empty_preds": {
+  "debiased_test": 0,
+  "rotation_0": 0,
+  "rotation_90": 0,
+  "rotation_180": 0,
+  "rotation_270": 0
+ },
+ "debiased_test": {
+  "total": 1485,
+  "em": 31.447811447811446,
+  "em_refined": 36.56565656565657
+ },
+ "rotation_0": {
+  "total": 750,
+  "em": 14.000000000000002,
+  "em_refined": 17.466666666666665
+ },
+ "rotation_90": {
+  "total": 750,
+  "em": 13.200000000000001,
+  "em_refined": 16.133333333333333
+ },
+ "rotation_180": {
+  "total": 750,
+  "em": 13.866666666666665,
+  "em_refined": 17.866666666666667
+ },
+ "rotation_270": {
+  "total": 750,
+  "em": 15.466666666666667,
+  "em_refined": 19.2
+ },
+ "rotation": {
+  "total_questions": 750,
+  "one": 54.93333333333334,
+  "two": 13.200000000000001,
+  "three": 2.1333333333333333,
+  "four": 0.4,
+  "VRS": 17.66666666666667
+ }
+}

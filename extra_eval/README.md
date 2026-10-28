@@ -2,8 +2,9 @@
 
 The released checkpoint
 [`alexzyqi/GPT4Scene-qwen2vl_full_sft_mark_32_3D_img512`](https://huggingface.co/alexzyqi/GPT4Scene-qwen2vl_full_sft_mark_32_3D_img512),
-evaluated on **Scan2Cap** and **Beacon3D (ScanNet)** with the repo's own inference
-(`evaluate/infer.py`, 32 marked frames + marked BEV image at 512 px, greedy, 128 new tokens).
+evaluated on **ScanRefer, Multi3DRefer, Scan2Cap, ScanQA, SQA3D (val + test), Real-3DQA** and
+**Beacon3D (ScanNet, 3RScan, MultiScan)** with the repo's own model code and scorers
+(32 marked frames + marked BEV image at 512 px, greedy, 128 new tokens).
 
 ## Run
 
@@ -11,8 +12,9 @@ evaluated on **Scan2Cap** and **Beacon3D (ScanNet)** with the repo's own inferen
 cp env.sh.example env.sh            # fill in paths (+ OPENAI_API_KEY for Beacon3D QA)
 bash extra_eval/build_env.sh        # uv venv: torch 2.7.1+cu128, transformers 4.46.1, flash-attn 2.8.3
 bash extra_eval/download.sh         # checkpoint, GPT4Scene-Val-Annotation, GPT4Scene-All val images
-bash extra_eval/run_infer.sh        # GPU; one process per visible GPU
-bash extra_eval/score.sh            # CPU; Java for Scan2Cap's METEOR/PTB tokenizer
+PREFIX_CACHE=1 bash extra_eval/run_infer.sh   # GPU; one process per visible GPU; all benchmarks
+                                              # (drop PREFIX_CACHE=1 for the upstream evaluate/infer.py path)
+bash extra_eval/score.sh            # CPU; Java for pycocoevalcap (Scan2Cap / ScanQA / SQA3D)
 
 # Beacon3D on re-rendered inputs (needs the 16 scenes' ScanNet .sens, see below)
 bash extra_eval/render/run_render.sh                     # frames, mark sets, renders per rule
@@ -39,15 +41,48 @@ the model code is the repo's, unchanged.
 
 ## Results
 
-### Scan2Cap (ScanNet val, 2007 objects, Mask3D proposals)
+### Paper benchmarks (ScanNet val, Mask3D proposals)
 
-Scored by the repo's `evaluate/calculate_scores.py` (`calc_scan2cap_score`).
-[`results/scan2cap/`](results/scan2cap)
+Scored by `score_extra.py` with the repo's own scorers (`evaluate/utils/eval.py`, as
+`evaluate/calculate_scores.py` calls them). The released checkpoint is the paper's
+**GPT4Scene-HDM** (arXiv 2501.01428, Table 1); paper numbers in parentheses.
+ScanRefer / Multi3DRefer / ScanQA / SQA3D: `PREFIX_CACHE=1` run; Scan2Cap: upstream path
+(the fast path gives CIDEr@0.5 85.76, see *Faster evaluation*). All in [`results/`](results)
+(`<bench>/scores.json` + `preds.json`, `summary.json`).
 
-| IoU  | CIDEr | BLEU-4 | METEOR | ROUGE-L |
-|------|------:|-------:|-------:|--------:|
-| 0.25 | 90.52 | 42.73  | 29.22  | 61.76   |
-| 0.50 | 85.18 | 40.25  | 28.18  | 59.16   |
+| Benchmark | Metric | Ours | Paper |
+|---|---|---:|---:|
+| ScanRefer (9508) | Acc@0.25 / Acc@0.5 | 62.33 / 56.75 | 62.6 / 57.0 |
+| Multi3DRefer (11120) | F1@0.25 / F1@0.5 | 64.14 / 59.50 | 64.5 / 59.8 |
+| Scan2Cap (2007) | CIDEr@0.5 / B-4@0.5 | 85.18 / 40.25 | 86.3 / 40.6 |
+| ScanQA val (4675) | CIDEr / B-1 / B-4 / METEOR / ROUGE / EM | 96.56 / 44.44 / 16.13 / 18.84 / 46.45 / 28.17 | 96.3 / 44.4 / 15.5 / 18.9 / 46.5 / 28.2 |
+| SQA3D val (3261) | EM / EM-R | 59.34 / 62.50 | 60.6 / 63.3 |
+| SQA3D test (3519) | EM / EM-R | 60.44 / 63.46 | – |
+
+Scan2Cap at IoU 0.25: CIDEr 90.52, B-4 42.73, METEOR 29.22, ROUGE-L 61.76 (@0.5: 28.18 / 59.16).
+
+**SQA3D splits.** GPT4Scene releases and reports SQA3D *val* only (`sqa3d_val.json`). The
+standard test split (3519 questions, 67 scenes, all with released images) is added from
+Chat-Scene's `sqa3d_test.json` in the same prompt format (`build_annos.py`). Per question type
+(What / Is / How / Can / Which / Others), test EM: 54.14 / 73.93 / 60.65 / 70.71 / 47.86 / 59.19.
+(BLEU on one-word answers is degenerate in this scorer and not reported.)
+
+### Real-3DQA (situated QA debiased + viewpoint rotation)
+
+HF `Oliver-Ma/Real-3DQA`, scored by its official `evaluate_debiased_exact_match.py` and
+`evaluate_rotation_robustness.py` (vendored in `real3dqa/`, unmodified). Questions are posed in
+GPT4Scene's SQA3D format (`<situation> <question> Answer the question using a single word or
+phrase.`); the rotation splits change only the situation text, so the scene input is the same
+as for SQA3D. [`results/real3dqa/`](results/real3dqa)
+
+| Split | EM | EM-R |
+|---|---:|---:|
+| debiased_test (1485) | 31.45 | 36.57 |
+| rotation 0 / 90 / 180 / 270 (750 each) | 14.00 / 13.20 / 13.87 / 15.47 | 17.47 / 16.13 / 17.87 / 19.20 |
+
+| Rotation consistency | One | Two | Three | Four | VRS |
+|---|---:|---:|---:|---:|---:|
+| | 54.93 | 13.20 | 2.13 | 0.40 | 17.67 |
 
 ### Beacon3D, ScanNet — all 16 scenes on re-rendered inputs (main result)
 
@@ -169,8 +204,7 @@ Beacon3D's evaluators (vendored in `beacon3d/Beacon3D`, unmodified), QA judged b
 (`selected_images_mark_3D_val_32.json`, 143 ScanNet val scenes). Four Beacon3D scenes have
 none: `scene0458_01`, `scene0568_02`, `scene0591_02`, `scene0697_01`. They are left out and
 the official evaluators run on Beacon3D's data + metadata filtered to the other 12 scenes:
-**1254 / 1611 grounding cases, 894 / 1155 QA cases**. 3RScan and MultiScan are not
-evaluated (no RGB video to render GPT4Scene's inputs from).
+**1254 / 1611 grounding cases, 894 / 1155 QA cases** (3RScan / MultiScan: re-rendered, above).
 
 **Grounding.** GPT4Scene answers with the `<OBJxxx>` mark of a Mask3D proposal. The first
 valid mark (as in its ScanRefer eval; all 1254 answers had one) is matched to the ScanNet GT
@@ -193,9 +227,62 @@ Grounding->QA chain (Beacon3D's `eval_chain`; G1Q1 / G1Q0 / G0Q1 / G0Q0):
 | any overlap | 33.66 / 12.33 / 30.14 / 23.87 | 30.09 / 17.23 / 29.75 / 22.93 | 34.05 | 49.72 |
 | IoU@0.25    | 33.27 / 12.13 / 30.53 / 24.07 | 29.75 / 16.89 / 30.09 / 23.27 | 33.51 | 50.28 |
 
+## Faster evaluation: `PREFIX_CACHE=1`
+
+Every question of a scene shares the same ~8.5k-token image prefix (32 frames + BEV), and the
+question text comes after it. `infer_prefix_cache.py` therefore runs all tasks in one pass
+grouped by scene (whole scenes sharded over GPUs, balanced by question count): the vision tower
+and the LLM run once per scene over the chat template up to the last `<|vision_end|>`, and the
+per-layer post-RoPE K/V of that prefix are kept. Questions are then decoded greedily in batches
+of 32 (right-padded suffixes): a patched `Qwen2VLFlashAttention2.forward` attends to the shared
+prefix (`flash_attn_with_kvcache`, non-causal) and to the row's own keys (causal) and merges the
+two by log-sum-exp; M-RoPE positions continue at prefix max + 1. Prompts, images, greedy
+decoding, 128 new tokens and the output files are those of `evaluate/infer.py`.
+
+Checked against the upstream path on the same inputs
+([`results/prefix_cache/agreement.json`](results/prefix_cache/agreement.json)): identical
+answers on 95–99% of Beacon3D grounding / QA items in every domain and mark rule (97.8% on
+released-images ScanNet); Scan2Cap captions match exactly on 76% (bf16 near-ties early in a
+long caption), CIDEr@0.5 85.18 -> 85.76. Scores (QA judge `gpt-4o-mini-2024-07-18`):
+
+| Beacon3D run | G case (upstream / fast) | QA GPT-score | QA EM |
+|---|---|---|---|
+| ScanNet released images (12 sc.) | 59.84 / 60.08 | 60.12 / 60.01 | 56.15 / 56.38 |
+| ScanNet render `gt` | 66.05 / 66.05 | 62.23 / 62.66 | 59.05 / 59.74 |
+| ScanNet render `all` | 64.58 / 64.58 | 60.30 / 60.11 | 56.80 / 56.62 |
+| 3RScan render `gt` / `all` | 45.22 / 45.38, 33.03 / 32.46 | 52.82 / 53.00, 51.65 / 52.85 | 49.63 / 49.63, 48.28 / 49.26 |
+| MultiScan render `gt` / `all` | 51.90 / 51.60, 42.92 / 43.23 | 37.32 / 38.84, 37.32 / 38.94 | 33.75 / 35.22, 33.33 / 35.01 |
+
+(MultiScan has 477 QA items, ~0.2 per item.) The tables above keep the upstream-path numbers
+for Scan2Cap and Beacon3D; the other benchmarks were run with `PREFIX_CACHE=1` only.
+
+Wall clock on 2 Blackwell GPUs (upstream = Slurm job time, fast = `run_infer.sh` incl. model load):
+
+| Run | upstream | `PREFIX_CACHE=1` |
+|---|---:|---:|
+| Scan2Cap + Beacon3D-ScanNet, released images (4155 items) | 23.4 min | 3.8 min (6×) |
+| Beacon3D-ScanNet render, one rule (2766 items) | 37.7 min | 26 s |
+| Beacon3D-3RScan / MultiScan render, one rule (2083 / 1134 items) | 19.3 / 18.3 min | 18 / 16 s |
+| all benchmarks on released images (40723 items) | – | 6.4 min |
+
+Peak GPU memory 17.4 GB per process. The gain is largest for many short answers per scene
+(Beacon3D: ~170 questions per scene, one prefix each) and smallest for long captions.
+
+## Dependencies: `deps/`
+
+All data, checkpoints and environments a run reads are reached through the gitignored
+`deps/` (hard links or copies, or symlinks only into storage owned by this baseline), and
+`env.sh` points there, so deleting a shared copy elsewhere does not break re-runs. The venv's
+interpreter is a copy too (`pyvenv.cfg` home -> `deps/uv-python-3.10.22`).
+
 ## Files
 
 * `build_env.sh`, `download.sh`, `run_infer.sh`, `score.sh` — the steps above; paths from `env.sh`
+* `infer_prefix_cache.py` — `PREFIX_CACHE=1` inference (see *Faster evaluation*);
+  `compare_preds.py` — item agreement of two runs
+* `build_annos.py` — SQA3D test + Real-3DQA -> GPT4Scene val annotations + config
+* `score_extra.py` — ScanRefer / Multi3DRefer / Scan2Cap / ScanQA / SQA3D / Real-3DQA scoring;
+  `real3dqa/` — the official Real-3DQA evaluators (vendored, see `real3dqa/VENDORED.md`)
 * `beacon3d/build_annos.py` — Beacon3D -> GPT4Scene val annotations (its own ScanRefer/ScanQA prompts) + config
 * `beacon3d/score_beacon3d.py` — proposal->GT matching, subset data/metadata, official evaluators, `scores.json`
 * `beacon3d/beacon_grounding_shim.py` — runs `evaluate_grounding.py` skipping knowledge tags with no cases

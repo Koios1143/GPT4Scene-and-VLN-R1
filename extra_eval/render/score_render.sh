@@ -8,12 +8,13 @@
 #   RENDER_DIR   run_render.sh output              (default eval_outputs/render)
 #   VAL_SCENES   validation scenes                 (default scene0025_00,scene0164_00,scene0426_00)
 #   QA_MODEL     Beacon3D QA judge                 (default gpt-4o-mini-2024-07-18)
+#   RESULT_DIR   where results go                  (default extra_eval/results)
 set -uo pipefail
 cd "$(dirname "${BASH_SOURCE[0]}")/../.."
 [ -f env.sh ] && source env.sh
 unset CONDA_PREFIX CONDA_DEFAULT_ENV
 PY="${GPT4SCENE_ENV:-.venv}/bin/python"
-RES=extra_eval/results
+RES="${RESULT_DIR:-extra_eval/results}"
 RENDER_DIR="${RENDER_DIR:-eval_outputs/render}"
 mkdir -p "$RES/render"
 cp "$RENDER_DIR/mark_sets.json" "$RES/render/mark_sets.json"

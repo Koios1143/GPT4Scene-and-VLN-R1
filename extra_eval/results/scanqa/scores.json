@@ -1,0 +1,12 @@
+{
+ "pred_dir": "eval_outputs/pc_all",
+ "[scanqa] EM1": 28.171122994652407,
+ "[scanqa] EM1_refined": 47.61497326203209,
+ "[scanqa] Bleu_1": 44.44115122197947,
+ "[scanqa] Bleu_2": 30.416427724528848,
+ "[scanqa] Bleu_3": 22.46401584519134,
+ "[scanqa] Bleu_4": 16.126554596746335,
+ "[scanqa] METEOR": 18.84335853825772,
+ "[scanqa] ROUGE_L": 46.45422442405842,
+ "[scanqa] CIDEr": 96.5595994497957
+}
